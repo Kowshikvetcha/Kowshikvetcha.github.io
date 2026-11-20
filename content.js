@@ -57,39 +57,295 @@ window.PORTFOLIO = {
     }
   ],
 
-  // Personal projects from github.com/Kowshikvetcha (work projects are under Experience)
+  // Personal projects. Each card opens project.html?id=<id>, built from `details`.
+  // See README → "Project detail pages" for every field.
   projects: [
     {
+      id: "insurance-policy-analyser",
       title: "Insurance Policy Analyser",
       description:
         "Upload a health insurance policy and ask questions about it — every answer cites the page, table or figure it came from. A layout-aware ingestion engine keeps benefit tables and footnotes intact, and a Policy Fit Score rates the policy 1–10 against a personal health profile.",
       tags: ["RAG", "Docling", "FastAPI", "React", "LLMs", "Evals"],
       github: "https://github.com/Kowshikvetcha/Insurance_RAG",
-      live: ""
+      live: "",
+      details: {
+        category: "GenAI · Document Intelligence",
+        summary:
+          "A document-grounded assistant for health insurance policies. It answers questions with citations to the exact page, table or figure, and scores how well a policy fits one person's health profile.",
+        metrics: [
+          { value: "1–10", label: "Policy fit score with cited evidence" },
+          { value: "9", label: "Policy areas rated per profile" },
+          { value: "~19 s", label: "To ingest a 4-page policy on CPU" },
+          { value: "6+", label: "Swappable LLM providers" }
+        ],
+        sections: [
+          {
+            title: "The problem",
+            text: [
+              "Insurance policies keep their most important facts in tables (benefit schedules, sub-limits, plan comparisons), charts, footnotes and definitions. A typical \"chat with your PDF\" tool flattens all of that into plain text, so answers about waiting periods, co-pays or room-rent limits come out vague or wrong.",
+              "Policyholders need answers they can trust and verify: is this treatment covered, what is my waiting period, how much room rent is covered?"
+            ]
+          },
+          {
+            title: "Ingestion engine",
+            text: ["The core of the project is a pipeline that preserves document structure instead of flattening it:"],
+            list: [
+              "**Parse:** the Docling layout model reads headings, reading order and multi-column pages. TableFormer reconstructs tables, including merged cells and multi-row headers. OCR handles scanned pages, and clipped-text recovery restores words that overflow a cell border.",
+              "**Tables:** merges tables that continue across pages, flattens multi-row headers, forward-fills merged row labels and links footnote markers (*, #, ¹) to their text.",
+              "**Figures:** drops logos and icons, and uses a vision LLM to describe charts and diagrams, with numbers extracted as tables.",
+              "**Enrichment:** a definitions glossary injected at answer time, section tags (coverage, exclusion, waiting period, sub-limit, co-pay, claims) and LLM table summaries.",
+              "**Two-level index:** small units (sentences, table rows) are searched; full parent sections and tables are what the LLM reads."
+            ]
+          },
+          {
+            title: "Answering",
+            text: [
+              "Questions go through a history-aware query rewrite, then hybrid retrieval: dense embeddings plus BM25, merged with reciprocal-rank fusion and category boosts, with optional reranking. Results expand to their parent sections and relevant glossary definitions before a grounded prompt produces a streamed answer with citations.",
+              "After each upload, an ingestion report shows the extracted tables (with previews), figures, OCR pages, defined terms and warnings, so extraction quality can be checked at a glance."
+            ]
+          },
+          {
+            title: "Policy Fit Score",
+            list: [
+              "The user fills in a health profile: basics, medical history, lifestyle, plans and priorities.",
+              "Up to nine areas are rated against it: pre-existing conditions, waiting periods, sum insured, co-pay and deductibles, room rent and sub-limits, exclusions, maternity, extras and renewal terms.",
+              "Weights follow the profile. For example, pre-existing conditions weigh far more when conditions are declared.",
+              "**The LLM rates each area with cited evidence, but deterministic code computes the score:** a weighted mean, capped at 4 if any area is a deal-breaker. Areas the policy doesn't cover lower the confidence instead of guessing."
+            ]
+          },
+          {
+            title: "Evaluation & observability",
+            list: [
+              "Every question and upload is traced in a self-hosted Langfuse instance.",
+              "Each answer is graded in the background for groundedness, context relevance and answer relevance, combined into a confidence score.",
+              "An offline suite scores a golden question set with custom metrics plus RAGAS.",
+              "A pytest suite runs against a synthetic policy that covers the hard cases: a 2-page table with spanning cells, footnotes, an overflowing cell, a chart and a scanned page."
+            ]
+          },
+          {
+            title: "Privacy by design",
+            list: [
+              "Documents are processed in memory only, never written to disk, and document text is never logged.",
+              "Sessions expire automatically and can be deleted immediately.",
+              "The health profile is used for a single request and never stored. Traces keep only a redacted summary.",
+              "A fully local setup is possible with Ollama for the LLM."
+            ]
+          }
+        ],
+        stack: [
+          { group: "Backend", items: ["Python", "FastAPI", "Docling", "TableFormer", "PyMuPDF"] },
+          { group: "Retrieval", items: ["Embeddings", "BM25", "Reciprocal-rank fusion", "Reranking"] },
+          { group: "LLMs", items: ["Anthropic", "OpenAI", "Gemini", "Groq", "Mistral", "Ollama"] },
+          { group: "Frontend", items: ["React", "TypeScript", "Vite"] },
+          { group: "Quality", items: ["Langfuse", "RAGAS", "Pytest", "Docker"] }
+        ]
+      }
     },
     {
+      id: "nifty50-event-study",
       title: "Nifty 50 Event Study",
       description:
         "A research pipeline that tests whether Nifty 50 stocks move before material corporate news is public. Aligns timestamped BSE/NSE filings to the first tradable session and checks abnormal returns, volume, F&O positioning and large deals against placebo days.",
       tags: ["Python", "Pandas", "SciPy", "Quant Research"],
       github: "https://github.com/Kowshikvetcha/nifty50-event-study",
-      live: ""
+      live: "",
+      details: {
+        category: "Quantitative Research · Market Microstructure",
+        summary:
+          "Does the market know before the news? A statistical study of information leakage across the Nifty 50, using second-level filing timestamps, minute-level prices, options data and a placebo control.",
+        metrics: [
+          { value: "1,840", label: "Material events analysed" },
+          { value: "49", label: "Nifty 50 stocks covered" },
+          { value: "938", label: "Placebo days as a control" },
+          { value: "26 mo", label: "Of filings, Aug 2024 – Oct 2026" }
+        ],
+        sections: [
+          {
+            title: "The question",
+            text: [
+              "When a listed company has material news (an acquisition, a big order, a regulatory problem), it must disclose it to the exchanges, and nobody should trade on it before then. In practice the information passes through many hands first.",
+              "The hypothesis: for Nifty 50 stocks, some of the market's reaction happens before the news is public. If so, prices should drift in the news' direction, and volume and options positioning should rise on the side that would profit. The study can show that markets behave as if someone knew; it cannot say who traded or whether anything illegal happened."
+            ]
+          },
+          {
+            title: "Method",
+            list: [
+              "**Exact public time:** every corporate announcement from both BSE and NSE. The public time is the earlier broadcast, to the second. Day 0 is the first session that could react, using the 15:30 IST rule.",
+              "**Material vs routine:** a keyword classifier keeps material news and drops routine compliance filings.",
+              "**Scheduled vs unscheduled:** results and dividends have known dates, so positioning before them is expected. The headline verdicts use unscheduled news only.",
+              "**Signed price drift:** the Nifty-adjusted return over the 5 sessions before Day 0, signed by the direction of the news so leaks before good and bad news don't cancel out. A sector-adjusted version removes sector news.",
+              "**Positioning signals:** share volume, option volume, short-dated out-of-the-money options split into news side vs wrong side, futures and options open interest, bulk/block deals, SEBI-reported insider trades, and volume in the hour before in-session filings using 1-minute data."
+            ]
+          },
+          {
+            title: "Separating leakage from public news",
+            text: ["Most apparent leakage turns out to be public information that isn't a company filing. Each event is flagged for:"],
+            list: [
+              "a big market day or a big sector day in the pre-window;",
+              "an exchange clarification about a media report;",
+              "broker rating changes or press coverage before the filing.",
+              "The \"unscheduled, no public catalyst\" group keeps only events with none of these: the cleanest test of leakage."
+            ]
+          },
+          {
+            title: "Statistical testing",
+            list: [
+              "Every stock gets up to 20 random non-event days, measured exactly the same way, as a placebo baseline.",
+              "Signed drift is tested four ways: t-test, BMP standardised test, sign test and a placebo bootstrap.",
+              "Positioning signals are compared directly against the placebo days rather than against zero.",
+              "Option-flow leads are drilled into minute by minute: which contracts were bought, when, whether the buyers profited, and whether any SEBI order or press report explains them."
+            ]
+          },
+          {
+            title: "Findings",
+            list: [
+              "**No systematic leakage** in prices, share volume or insider trading that survives controls for public news.",
+              "Option activity before unscheduled news **disappears in the no-catalyst group**, so it is explained by public catalysts.",
+              "**One robust anomaly:** volume rises in the hour before in-session filings (+0.40 z, p 0.04 in the no-catalyst group) without a directional price move. It looks like a story circulating rather than traders betting on the outcome.",
+              "An early 12-month result showing price drift disappeared with twice the data, a useful reminder that small samples produce noise.",
+              "Sanity check: insiders trade far less before scheduled results (61% vs 74% of random days), matching SEBI's mandatory trading-window closure."
+            ]
+          },
+          {
+            title: "Output",
+            text: [
+              "Each run produces a self-contained HTML report (verdicts, average signed CAR path, drift by event type, test tables, top movers and ranked option-flow leads) plus per-event, placebo and test CSVs. A drill-down tool generates a detailed page for each lead."
+            ]
+          }
+        ],
+        stack: [
+          { group: "Language", items: ["Python 3.12"] },
+          { group: "Analysis", items: ["Pandas", "NumPy", "SciPy"] },
+          { group: "Data sources", items: ["BSE & NSE APIs", "NSE F&O bhavcopy", "Upstox candles", "SEBI orders", "Google News RSS"] },
+          { group: "Methods", items: ["Event study", "Placebo bootstrap", "BMP test", "Sign test"] }
+        ]
+      }
     },
     {
+      id: "ai-data-cleaning-pro",
       title: "AI Data Cleaning Pro",
       description:
         "Clean datasets by describing what you want in plain English. Offers 30+ cleaning operations, a data-quality dashboard with health scores, multi-dataset joins and full undo/redo — every change is confirmed before it applies.",
       tags: ["Python", "Pandas", "OpenAI", "Streamlit", "Docker"],
       github: "https://github.com/Kowshikvetcha/Data_quality_mvp",
-      live: ""
+      live: "",
+      details: {
+        category: "GenAI · Data Quality",
+        summary:
+          "An AI-assisted data cleaning tool: upload a dataset, see its quality issues, and clean it by chatting in plain English. Every change is previewed and confirmed before it is applied.",
+        metrics: [
+          { value: "30+", label: "Cleaning operations" },
+          { value: "247", label: "Automated tests" },
+          { value: "20", label: "Steps of undo / redo" },
+          { value: "3", label: "Export formats" }
+        ],
+        sections: [
+          {
+            title: "The problem",
+            text: [
+              "Cleaning data is repetitive and error-prone. Analysts write the same Pandas snippets again and again to fill nulls, trim spaces, fix dates and standardise categories, and it's easy to apply a change you can't undo. Non-programmers often can't do it at all."
+            ]
+          },
+          {
+            title: "How it works",
+            list: [
+              "**Describe it, don't code it:** the user writes a request like \"fill missing ages with the median and trim spaces in all text columns\".",
+              "**Function calling, not free-form code:** the LLM maps the request onto a fixed set of validated cleaning tools, so it can't run arbitrary code.",
+              "**Preview and confirm:** every change shows a before/after diff and needs explicit confirmation.",
+              "**Undo / redo:** a full history stack makes every step reversible."
+            ]
+          },
+          {
+            title: "Features",
+            list: [
+              "30+ operations: fill nulls, trim, change case, round, clip and scale numbers, regex replace, parse dates, split and merge columns, and more.",
+              "Batch operations across many columns at once.",
+              "A data-quality dashboard with automated checks, an overall health score and column-level summaries.",
+              "AI-generated cleaning suggestions based on the issues found.",
+              "Multi-dataset joins on shared keys.",
+              "Point-and-click manual transformations alongside the chat.",
+              "Export to CSV, Excel or JSON."
+            ]
+          },
+          {
+            title: "Engineering for production",
+            list: [
+              "**Safety:** formulas for calculated columns are sanitised to prevent code injection, and inputs are validated before any tool runs.",
+              "**Resilience:** OpenAI calls use timeouts and retries with exponential backoff.",
+              "**Configuration:** settings such as model, limits and log level are centralised and overridable through environment variables.",
+              "**Operations:** rotating file logs, a Docker image with a health check, and 247 pytest tests covering checks, cleaning, the executor, confirmation, diffs, export, joins and scoring."
+            ]
+          }
+        ],
+        stack: [
+          { group: "App", items: ["Python", "Streamlit"] },
+          { group: "Data", items: ["Pandas", "NumPy", "PyArrow"] },
+          { group: "AI", items: ["OpenAI", "Function calling"] },
+          { group: "Quality & Ops", items: ["Pytest", "Docker", "Logging"] }
+        ]
+      }
     },
     {
+      id: "ai-interview-practice-coach",
       title: "AI Interview Practice Coach",
       description:
         "A desktop practice tool for mock interviews. It listens to questions from a Zoom, Meet or Teams session, transcribes them live with Whisper and uses GPT-4o to suggest a structured model answer with key points and code snippets. Everything streams over WebSockets to an always-on-top Electron overlay, so you can rehearse and compare your own answers.",
       tags: ["FastAPI", "Whisper", "GPT-4o", "WebSockets", "Electron"],
       github: "https://github.com/Kowshikvetcha/AI_Assistant/tree/main/interview-helper",
-      live: ""
+      live: "",
+      details: {
+        category: "GenAI · Real-time Speech",
+        summary:
+          "A real-time desktop coach for interview practice. During a mock interview call it transcribes each question as it is asked and suggests a structured model answer, so you can compare your own answer and improve.",
+        metrics: [
+          { value: "~3–5 s", label: "From question to suggested answer" },
+          { value: "2 s", label: "Audio chunks streamed live" },
+          { value: "7", label: "LLM provider presets" },
+          { value: "3", label: "Meeting apps: Zoom, Meet, Teams" }
+        ],
+        sections: [
+          {
+            title: "Why I built it",
+            text: [
+              "Practising interviews alone is hard: you don't get feedback on what a strong answer should have covered. This tool sits beside a mock interview, on a practice call with a friend or with recorded questions, and shows a well-structured reference answer with key points and code snippets, so you can compare it with your own answer straight away."
+            ]
+          },
+          {
+            title: "Architecture",
+            list: [
+              "**Audio capture:** system audio is captured with WASAPI loopback on Windows in 1–2 second PCM chunks, so it works with any meeting app.",
+              "**Speech-to-text:** each chunk is transcribed with the OpenAI Whisper API.",
+              "**Answer generation:** GPT-4o turns the transcribed question into structured JSON: a concise answer, supporting bullet points and code snippets where relevant.",
+              "**Delivery:** a FastAPI backend pushes the transcript and answers over WebSockets to an Electron overlay.",
+              "**Overlay:** a floating, always-on-top window with a live transcript, start/stop/clear controls and a Ctrl+Shift+H toggle."
+            ]
+          },
+          {
+            title: "Engineering details",
+            list: [
+              "Performance logging for every cycle: STT latency, LLM latency, end-to-end latency and token usage, shown in the overlay's status bar.",
+              "Provider-agnostic configuration: works with any OpenAI-compatible API (OpenAI, OpenRouter, Groq, Together, Fireworks, DeepSeek, Ollama) through environment variables.",
+              "Typed Pydantic models and a central settings module.",
+              "Unit tests for STT, the LLM service, WebSockets and performance, with all API calls mocked so tests run without a key."
+            ]
+          },
+          {
+            title: "What's next",
+            list: [
+              "Stream answers token by token to reduce perceived latency.",
+              "Local speech-to-text for offline practice.",
+              "Session history and export to review practice sessions later.",
+              "macOS and Linux audio capture, plus a packaged installer."
+            ]
+          }
+        ],
+        stack: [
+          { group: "Backend", items: ["Python", "FastAPI", "WebSockets", "Pydantic"] },
+          { group: "AI", items: ["Whisper", "GPT-4o", "OpenAI-compatible APIs"] },
+          { group: "Desktop", items: ["Electron", "JavaScript", "WASAPI"] },
+          { group: "Quality", items: ["Pytest", "Latency logging"] }
+        ]
+      }
     }
   ],
   githubUrl: "https://github.com/Kowshikvetcha",

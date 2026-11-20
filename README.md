@@ -26,10 +26,10 @@ It is a plain HTML / CSS / JavaScript site: **no frameworks, no build step, no `
 
 1. **Edit** [`content.js`](content.js) (or replace a file in `assets/`).
 2. **Preview** locally (optional): `python -m http.server 5173`, then open http://localhost:5173.
-3. **Bump the file version** (only if you changed `content.js`, `script.js` or `styles.css`; see [why](#why-bump-the-version)):
+3. **Bump the file version** (only if you changed `content.js`, `script.js`, `project.js` or `styles.css`; see [why](#why-bump-the-version)):
 
    ```powershell
-   $v = Get-Date -Format yyyyMMddHHmmss; (Get-Content index.html -Raw) -replace '(styles\.css|content\.js|script\.js)\?v=\d+', "`$1?v=$v" | Set-Content index.html -Encoding utf8 -NoNewline
+   $v = Get-Date -Format yyyyMMddHHmmss; foreach ($f in 'index.html','project.html') { $p = Join-Path (Get-Location) $f; $t = [IO.File]::ReadAllText($p); [IO.File]::WriteAllText($p, ($t -replace '(styles\.css|content\.js|script\.js|project\.js)\?v=\d+', "`$1?v=$v")) }
    ```
 
 4. **Publish**:
@@ -46,7 +46,7 @@ GitHub Pages rebuilds automatically. The live site updates in **about 30–60 se
 
 GitHub Pages tells browsers to cache each file for **10 minutes**. Without a version bump, a returning visitor can get the *new* `index.html` with an *old* cached `script.js`. The two don't match, and the page can show up empty.
 
-`index.html` loads the files as `styles.css?v=…`, `content.js?v=…` and `script.js?v=…`. Changing that number makes every browser fetch the fresh files. The command in step 3 does this for you. It's harmless to run on every update.
+`index.html` and `project.html` load their files as `styles.css?v=…`, `content.js?v=…`, `script.js?v=…` and `project.js?v=…`. Changing that number makes every browser fetch the fresh files. The command in step 3 updates both pages for you. It's harmless to run on every update.
 
 ---
 
@@ -54,9 +54,11 @@ GitHub Pages tells browsers to cache each file for **10 minutes**. Without a ver
 
 ```
 portfolio/
-├── index.html          Page skeleton: sections, nav, contact form markup, <head> meta tags
-├── content.js          ★ ALL editable content: name, about, skills, jobs, projects, links…
-├── script.js           Renders content.js into the page + theme toggle, menu, form logic
+├── index.html          Home page skeleton: sections, nav, contact form markup, <head> meta tags
+├── project.html        Project detail page template (one page serves every project)
+├── content.js          ★ ALL editable content: name, about, skills, jobs, projects + case studies, links…
+├── script.js           Renders content.js into the home page + theme toggle, menu, form logic
+├── project.js          Renders one project's case study into project.html
 ├── styles.css          All styling: colours, layout, dark/light themes, mobile layout
 ├── assets/
 │   └── Vetcha_Kowshik_Resume.pdf   The file the "Download Resume" button serves
@@ -68,6 +70,7 @@ portfolio/
 | You want to change… | Edit this |
 |---|---|
 | Any text, numbers, skills, jobs, projects, links | `content.js` |
+| A project's detail page (case study) | `details` of that project in `content.js` |
 | The resume file | `assets/Vetcha_Kowshik_Resume.pdf` |
 | Colours, fonts, spacing | `styles.css` |
 | Browser-tab title, link-preview text, favicon | `<head>` of `index.html` |
@@ -166,11 +169,13 @@ The **newest job goes first**. To add a job, copy one `{ … }` block, paste it 
 ```js
 projects: [
   {
+    id: "insurance-policy-analyser",  // used in the page URL; lowercase, hyphens, unique
     title: "Insurance Policy Analyser",
     description: "Two or three sentences about the problem and the result.",
     tags: ["RAG", "FastAPI", "React"],
     github: "https://github.com/Kowshikvetcha/Insurance_RAG",
-    live: ""                       // demo URL, or "" for none
+    live: "",                      // demo URL, or "" for none
+    details: { … }                 // the project's own page (see below)
   }
 ],
 githubUrl: "https://github.com/Kowshikvetcha",   // "See all on GitHub" button
@@ -178,12 +183,55 @@ githubUrl: "https://github.com/Kowshikvetcha",   // "See all on GitHub" button
 
 | Field | Notes |
 |---|---|
+| `id` | Short, unique, URL-safe name. The card links to `project.html?id=<id>`. Leave it out and the card isn't clickable. |
 | `title`, `description`, `tags` | Card heading, text and the small tech labels. |
 | `github` | Repo link (GitHub icon). Use `""` to hide the icon. |
 | `live` | Live demo link (external-link icon). Use `""` to hide it. |
 | `org` *(optional)* | Small label above the title, e.g. `"DataNimbus"`, for work projects. |
+| `details` | The content of the project's detail page. See [Project detail pages](#project-detail-pages). |
 
-Cards appear **in the order listed**. To add a project, copy a block and edit it. To remove one, delete its whole `{ … }` block and its trailing comma. Set `githubUrl` to `""` to hide the "See all on GitHub" button.
+Cards appear **in the order listed**, and the "Previous / Next" links on the detail pages follow the same order. To add a project, copy a block and edit it. To remove one, delete its whole `{ … }` block and its trailing comma. Set `githubUrl` to `""` to hide the "See all on GitHub" button.
+
+> ⚠️ Changing a project's `id` changes its URL, so any link you've already shared to that page will show "Project not found".
+
+### Project detail pages
+
+Clicking a project card opens **`project.html?id=<id>`**, a case-study page built from that project's `details`. There is one `project.html` for all projects; you never copy HTML to add a page.
+
+```js
+details: {
+  category: "GenAI · Document Intelligence",   // small label above the title
+  summary: "One or two sentences shown under the title.",
+  metrics: [                                   // highlight cards (3–4 look best)
+    { value: "1–10", label: "Policy fit score with cited evidence" },
+    { value: "~19 s", label: "To ingest a 4-page policy on CPU" }
+  ],
+  sections: [                                  // the main write-up, top to bottom
+    {
+      title: "The problem",
+      text: ["A paragraph.", "Another paragraph."],          // optional
+      list: ["A bullet point.", "**Bold lead-in:** detail."] // optional
+    }
+  ],
+  stack: [                                     // "Tech stack" sidebar
+    { group: "Backend", items: ["Python", "FastAPI"] }
+  ]
+}
+```
+
+| Field | Shown as |
+|---|---|
+| `category` | Small teal label above the project title. |
+| `summary` | Intro paragraph under the title. Falls back to `description` if missing. |
+| `metrics` | Row of highlight cards with big numbers. Leave out or use `[]` for none. |
+| `sections` | The case study. Each section has a `title` plus `text` paragraphs and/or a `list` of bullets. |
+| `stack` | Grouped tech chips in the sidebar. Falls back to the card's `tags` if missing. |
+
+Formatting tips:
+- Wrap words in `**double asterisks**` to make them **bold**. That is the only formatting supported.
+- A good order of sections: *The problem → How it works / Architecture → Key features → Results / Findings → What's next*.
+- The GitHub and Live demo buttons on the page come from the project's `github` and `live` fields.
+- Every detail page uses the same `<head>` for all projects, so link previews on LinkedIn show the generic project title. The browser tab title is set per project.
 
 ### Certifications & education
 
@@ -361,7 +409,9 @@ If you buy a domain (e.g. `kowshikvetcha.com`):
 
 | Problem | Likely cause / fix |
 |---|---|
-| Page is blank or sections are empty | A syntax error in `content.js`, usually a missing comma or quote. Open the browser console (`F12` → Console) for the line number. |
+| Page is blank or sections are empty | A syntax error in `content.js`, usually a missing comma or quote. Open the browser console (`F12` → Console) for the line number. Can also be a stale cache; see [Why bump the version?](#why-bump-the-version) |
+| Project page says "Project not found" | The `id` in the URL doesn't match any project's `id` in `content.js` (check spelling, and that the project has an `id`). |
+| Project card isn't clickable | The project has no `id`. |
 | Change doesn't show on the live site | Wait about 1 minute, then hard-refresh with `Ctrl + F5`. Check the repo's **Actions** tab for a failed build. Confirm you ran `git push`. |
 | Contact form says "Sorry, that didn't send" | Check the key in `content.js`, check the Website URL setting on Web3Forms, and check you're not over the monthly limit. |
 | Form messages not arriving | Look in spam and mark the message "Not spam". Check the delivery email on Web3Forms. |

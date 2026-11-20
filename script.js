@@ -54,9 +54,10 @@
           </div>
         </div>
         ${p.org ? `<span class="project-org">${esc(p.org)}</span>` : ""}
-        <h4>${esc(p.title)}</h4>
+        <h4>${p.id ? `<a class="card-link" href="project.html?id=${encodeURIComponent(p.id)}">${esc(p.title)}</a>` : esc(p.title)}</h4>
         <p>${esc(p.description)}</p>
         <ul class="tags">${p.tags.map((t) => `<li>${esc(t)}</li>`).join("")}</ul>
+        ${p.id ? `<p class="read-more">Read case study <span>→</span></p>` : ""}
       </article>`
     )
     .join("");
