@@ -26,7 +26,13 @@ It is a plain HTML / CSS / JavaScript site: **no frameworks, no build step, no `
 
 1. **Edit** [`content.js`](content.js) (or replace a file in `assets/`).
 2. **Preview** locally (optional): `python -m http.server 5173`, then open http://localhost:5173.
-3. **Publish**:
+3. **Bump the file version** (only if you changed `content.js`, `script.js` or `styles.css`; see [why](#why-bump-the-version)):
+
+   ```powershell
+   $v = Get-Date -Format yyyyMMddHHmmss; (Get-Content index.html -Raw) -replace '(styles\.css|content\.js|script\.js)\?v=\d+', "`$1?v=$v" | Set-Content index.html -Encoding utf8 -NoNewline
+   ```
+
+4. **Publish**:
 
    ```powershell
    git add -A
@@ -35,6 +41,12 @@ It is a plain HTML / CSS / JavaScript site: **no frameworks, no build step, no `
    ```
 
 GitHub Pages rebuilds automatically. The live site updates in **about 30–60 seconds**. If you don't see the change, hard-refresh with `Ctrl + F5`.
+
+### Why bump the version?
+
+GitHub Pages tells browsers to cache each file for **10 minutes**. Without a version bump, a returning visitor can get the *new* `index.html` with an *old* cached `script.js`. The two don't match, and the page can show up empty.
+
+`index.html` loads the files as `styles.css?v=…`, `content.js?v=…` and `script.js?v=…`. Changing that number makes every browser fetch the fresh files. The command in step 3 does this for you. It's harmless to run on every update.
 
 ---
 
