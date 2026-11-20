@@ -6,7 +6,6 @@
 
   // ---- Render content ----
   document.title = `${d.name} — ${d.role}`;
-  $("logo").innerHTML = `${esc(d.name.charAt(0))}<span class="accent">.</span>`;
   $("hero-name").textContent = d.shortName || d.name;
   $("hero-role").textContent = d.role;
   $("hero-tagline").textContent = d.tagline;
