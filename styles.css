@@ -211,9 +211,20 @@ ul, ol { list-style: none; }
 .metric span { color: var(--muted); font-size: 0.88rem; }
 
 .project-layout { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 48px; align-items: start; }
-.case-section + .case-section { margin-top: 44px; }
-.case-section h2 { font-size: 1.35rem; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 14px; display: flex; align-items: center; gap: 10px; }
-.case-section h2::before { content: ""; width: 18px; height: 2px; background: var(--accent); border-radius: 2px; }
+.overview-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; margin-bottom: 20px; }
+.overview-card { padding: 26px 28px; }
+.overview-card:hover { transform: none; box-shadow: none; }
+.overview-card.solution { border-color: color-mix(in srgb, var(--accent) 45%, var(--border)); }
+.overview-label { display: block; font-family: "JetBrains Mono", monospace; font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); margin-bottom: 10px; }
+.overview-card p { color: var(--text); font-size: 1.02rem; line-height: 1.7; }
+
+.tech-heading {
+  font-size: clamp(1.4rem, 3vw, 1.75rem); font-weight: 700; letter-spacing: -0.02em;
+  margin-bottom: 28px; padding-bottom: 14px; border-bottom: 1px solid var(--border);
+}
+.case-section + .case-section { margin-top: 40px; }
+.case-section h3 { font-size: 1.2rem; font-weight: 700; letter-spacing: -0.01em; margin-bottom: 12px; display: flex; align-items: center; gap: 10px; }
+.case-section h3::before { content: ""; width: 18px; height: 2px; background: var(--accent); border-radius: 2px; }
 .case-section p { color: var(--muted); font-size: 1rem; }
 .case-section p + p { margin-top: 12px; }
 .case-section strong { color: var(--text); font-weight: 600; }
@@ -302,6 +313,8 @@ ul, ol { list-style: none; }
   .stats { gap: 28px; margin-top: 48px; }
   .contact-grid, .field-row { grid-template-columns: 1fr; }
   .project-page { padding-top: 24px; }
+  .overview-grid { grid-template-columns: 1fr; gap: 14px; }
+  .overview-card { padding: 20px; }
   .metric-grid { grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 44px; }
   .metric { padding: 16px; }
   .metric strong { font-size: 1.4rem; }

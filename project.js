@@ -42,10 +42,18 @@
       .map((m) => `<div class="card metric"><strong>${esc(m.value)}</strong><span>${esc(m.label)}</span></div>`)
       .join("");
 
+    const overview =
+      x.problem || x.solution
+        ? `<section class="overview-grid" aria-label="Overview">
+            ${x.problem ? `<div class="card overview-card"><span class="overview-label">The problem</span><p>${rich(x.problem)}</p></div>` : ""}
+            ${x.solution ? `<div class="card overview-card solution"><span class="overview-label">The solution</span><p>${rich(x.solution)}</p></div>` : ""}
+          </section>`
+        : "";
+
     const sections = (x.sections || [])
       .map(
         (s) => `<section class="case-section">
-          <h2>${esc(s.title)}</h2>
+          <h3>${esc(s.title)}</h3>
           ${(s.text || []).map((t) => `<p>${rich(t)}</p>`).join("")}
           ${s.list ? `<ul class="case-list">${s.list.map((li) => `<li>${rich(li)}</li>`).join("")}</ul>` : ""}
         </section>`
@@ -83,9 +91,12 @@
         <p class="project-summary">${rich(x.summary || p.description)}</p>
         ${actions ? `<div class="hero-cta">${actions}</div>` : ""}
       </section>
-      ${metrics ? `<section class="metric-grid">${metrics}</section>` : ""}
+      ${overview}
+      ${metrics ? `<section class="metric-grid" aria-label="Key numbers">${metrics}</section>` : ""}
       <div class="project-layout">
-        <article class="project-body">${sections || `<section class="case-section"><p>${rich(p.description)}</p></section>`}</article>
+        <article class="project-body">
+          ${sections ? `<h2 class="tech-heading">Technical implementation</h2>${sections}` : `<section class="case-section"><p>${rich(p.description)}</p></section>`}
+        </article>
         <aside class="project-aside">
           <div class="card aside-card"><h3>Tech stack</h3>${stack}</div>
           ${linkRows ? `<div class="card aside-card"><h3>Links</h3><div class="aside-links">${linkRows}</div></div>` : ""}

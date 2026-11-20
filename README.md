@@ -202,11 +202,13 @@ Clicking a project card opens **`project.html?id=<id>`**, a case-study page buil
 details: {
   category: "GenAI · Document Intelligence",   // small label above the title
   summary: "One or two sentences shown under the title.",
+  problem: "2–3 plain-language sentences: what's wrong today, and for whom.",
+  solution: "2–3 plain-language sentences: what you built and how it fixes that.",
   metrics: [                                   // highlight cards (3–4 look best)
     { value: "1–10", label: "Policy fit score with cited evidence" },
     { value: "~19 s", label: "To ingest a 4-page policy on CPU" }
   ],
-  sections: [                                  // the main write-up, top to bottom
+  sections: [                                  // "Technical implementation", top to bottom
     {
       title: "The problem",
       text: ["A paragraph.", "Another paragraph."],          // optional
@@ -223,13 +225,17 @@ details: {
 |---|---|
 | `category` | Small teal label above the project title. |
 | `summary` | Intro paragraph under the title. Falls back to `description` if missing. |
+| `problem` | **"The problem"** card, the first thing after the title. Write it for a recruiter: no jargon. |
+| `solution` | **"The solution"** card next to it: what you built, in plain words. |
 | `metrics` | Row of highlight cards with big numbers. Leave out or use `[]` for none. |
-| `sections` | The case study. Each section has a `title` plus `text` paragraphs and/or a `list` of bullets. |
+| `sections` | Everything under the **"Technical implementation"** heading. Each section has a `title` plus `text` paragraphs and/or a `list` of bullets. |
+
+The page reads in this order: **title → problem → solution → key numbers → technical implementation**. A recruiter can stop after the first two cards and still understand the project, and an engineer keeps reading for the details.
 | `stack` | Grouped tech chips in the sidebar. Falls back to the card's `tags` if missing. |
 
 Formatting tips:
 - Wrap words in `**double asterisks**` to make them **bold**. That is the only formatting supported.
-- A good order of sections: *The problem → How it works / Architecture → Key features → Results / Findings → What's next*.
+- Keep the problem and solution out of `sections`, since they already have their own cards. A good order for `sections` is *Architecture / How it works → Key features → Engineering details → Results / Findings → What's next*.
 - The GitHub and Live demo buttons on the page come from the project's `github` and `live` fields.
 - Every detail page uses the same `<head>` for all projects, so link previews on LinkedIn show the generic project title. The browser tab title is set per project.
 

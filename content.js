@@ -72,6 +72,10 @@ window.PORTFOLIO = {
         category: "GenAI · Document Intelligence",
         summary:
           "A document-grounded assistant for health insurance policies. It answers questions with citations to the exact page, table or figure, and scores how well a policy fits one person's health profile.",
+        problem:
+          "Health insurance policies run to dozens of pages of legal terms, and the details that matter, such as waiting periods, co-pays and room-rent limits, are buried in tables and footnotes. Generic \"chat with your PDF\" tools flatten those tables into plain text, so their answers are vague or wrong, and people can't tell whether to trust them.",
+        solution:
+          "An assistant that reads a policy the way a person would, keeping tables, charts and footnotes intact, and answers questions with a citation to the exact page or table so every answer can be checked. It also scores from 1 to 10 how well the policy fits a person's health needs, backing each rating with evidence from the document.",
         metrics: [
           { value: "1–10", label: "Policy fit score with cited evidence" },
           { value: "9", label: "Policy areas rated per profile" },
@@ -79,13 +83,6 @@ window.PORTFOLIO = {
           { value: "6+", label: "Swappable LLM providers" }
         ],
         sections: [
-          {
-            title: "The problem",
-            text: [
-              "Insurance policies keep their most important facts in tables (benefit schedules, sub-limits, plan comparisons), charts, footnotes and definitions. A typical \"chat with your PDF\" tool flattens all of that into plain text, so answers about waiting periods, co-pays or room-rent limits come out vague or wrong.",
-              "Policyholders need answers they can trust and verify: is this treatment covered, what is my waiting period, how much room rent is covered?"
-            ]
-          },
           {
             title: "Ingestion engine",
             text: ["The core of the project is a pipeline that preserves document structure instead of flattening it:"],
@@ -153,6 +150,10 @@ window.PORTFOLIO = {
         category: "Quantitative Research · Market Microstructure",
         summary:
           "Does the market know before the news? A statistical study of information leakage across the Nifty 50, using second-level filing timestamps, minute-level prices, options data and a placebo control.",
+        problem:
+          "Listed companies must announce material news to the stock exchanges before anyone can trade on it, but the information passes through many hands first. If it leaks, prices and options trading should move before the announcement, a sign of unfair and possibly insider trading. Testing this rigorously is hard, because most early moves have innocent explanations such as market-wide swings or press reports.",
+        solution:
+          "A research pipeline that collects every material announcement from India's 50 largest listed companies with its exact public time. It measures what the stock price, trading volume and options market did in the days and minutes before, and compares that with random \"normal\" days. Public explanations are filtered out, so only unexplained activity is flagged as possible leakage.",
         metrics: [
           { value: "1,840", label: "Material events analysed" },
           { value: "49", label: "Nifty 50 stocks covered" },
@@ -161,10 +162,9 @@ window.PORTFOLIO = {
         ],
         sections: [
           {
-            title: "The question",
+            title: "Hypothesis",
             text: [
-              "When a listed company has material news (an acquisition, a big order, a regulatory problem), it must disclose it to the exchanges, and nobody should trade on it before then. In practice the information passes through many hands first.",
-              "The hypothesis: for Nifty 50 stocks, some of the market's reaction happens before the news is public. If so, prices should drift in the news' direction, and volume and options positioning should rise on the side that would profit. The study can show that markets behave as if someone knew; it cannot say who traded or whether anything illegal happened."
+              "For Nifty 50 stocks, some of the market's reaction to material news happens before the news is public. If so, prices should drift in the news' direction, and volume and options positioning should rise on the side that would profit. The study can show that markets behave as if someone knew; it cannot say who traded or whether anything illegal happened."
             ]
           },
           {
@@ -233,6 +233,10 @@ window.PORTFOLIO = {
         category: "GenAI · Data Quality",
         summary:
           "An AI-assisted data cleaning tool: upload a dataset, see its quality issues, and clean it by chatting in plain English. Every change is previewed and confirmed before it is applied.",
+        problem:
+          "Before any analysis, data has to be cleaned: missing values, stray spaces, inconsistent dates and categories. It's repetitive work that usually means writing code, a wrong change is easy to make and hard to undo, and people who don't code have to wait for someone who does.",
+        solution:
+          "A web app where you upload a dataset, see its quality problems on a dashboard, and fix them by typing plain-English instructions such as \"fill missing ages with the median\". Every change is previewed and needs your approval before it's applied, and any step can be undone.",
         metrics: [
           { value: "30+", label: "Cleaning operations" },
           { value: "247", label: "Automated tests" },
@@ -240,12 +244,6 @@ window.PORTFOLIO = {
           { value: "3", label: "Export formats" }
         ],
         sections: [
-          {
-            title: "The problem",
-            text: [
-              "Cleaning data is repetitive and error-prone. Analysts write the same Pandas snippets again and again to fill nulls, trim spaces, fix dates and standardise categories, and it's easy to apply a change you can't undo. Non-programmers often can't do it at all."
-            ]
-          },
           {
             title: "How it works",
             list: [
@@ -297,6 +295,10 @@ window.PORTFOLIO = {
         category: "GenAI · Real-time Speech",
         summary:
           "A real-time desktop coach for interview practice. During a mock interview call it transcribes each question as it is asked and suggests a structured model answer, so you can compare your own answer and improve.",
+        problem:
+          "Practising for interviews alone gives you no feedback. You answer a question, but you don't know what a strong answer should have covered, so it's hard to see where to improve between real interviews.",
+        solution:
+          "A desktop app that runs alongside a mock interview call. It picks up each question as it's asked, transcribes it, and within a few seconds shows a structured model answer, with key points and code where relevant, in a small window on top of the call. You can compare it with your own answer straight away.",
         metrics: [
           { value: "~3–5 s", label: "From question to suggested answer" },
           { value: "2 s", label: "Audio chunks streamed live" },
@@ -304,12 +306,6 @@ window.PORTFOLIO = {
           { value: "3", label: "Meeting apps: Zoom, Meet, Teams" }
         ],
         sections: [
-          {
-            title: "Why I built it",
-            text: [
-              "Practising interviews alone is hard: you don't get feedback on what a strong answer should have covered. This tool sits beside a mock interview, on a practice call with a friend or with recorded questions, and shows a well-structured reference answer with key points and code snippets, so you can compare it with your own answer straight away."
-            ]
-          },
           {
             title: "Architecture",
             list: [
