@@ -12,7 +12,7 @@ It is a plain HTML / CSS / JavaScript site: **no frameworks, no build step, no `
 2. [Project files](#project-files)
 3. [Run it locally](#run-it-locally)
 4. [Editing content (`content.js`)](#editing-content-contentjs)
-5. [Updating the résumé](#updating-the-résumé)
+5. [Updating the resume](#updating-the-resume)
 6. [Contact form (Web3Forms)](#contact-form-web3forms)
 7. [Changing the look](#changing-the-look)
 8. [Page title, link previews and favicon](#page-title-link-previews-and-favicon)
@@ -47,7 +47,7 @@ portfolio/
 ├── script.js           Renders content.js into the page + theme toggle, menu, form logic
 ├── styles.css          All styling: colours, layout, dark/light themes, mobile layout
 ├── assets/
-│   └── Vetcha_Kowshik_Resume.pdf   The file the "Download résumé" button serves
+│   └── Vetcha_Kowshik_Resume.pdf   The file the "Download Resume" button serves
 ├── .nojekyll           Tells GitHub Pages to serve files as-is (don't delete)
 ├── .gitignore          Keeps local-only files (.claude/) out of the repo
 └── README.md           This guide
@@ -56,7 +56,7 @@ portfolio/
 | You want to change… | Edit this |
 |---|---|
 | Any text, numbers, skills, jobs, projects, links | `content.js` |
-| The résumé file | `assets/Vetcha_Kowshik_Resume.pdf` |
+| The resume file | `assets/Vetcha_Kowshik_Resume.pdf` |
 | Colours, fonts, spacing | `styles.css` |
 | Browser-tab title, link-preview text, favicon | `<head>` of `index.html` |
 | Add/remove/reorder whole sections, nav links | `index.html` (+ `script.js` for new data) |
@@ -95,7 +95,7 @@ Then open **http://localhost:5173**. Stop it with `Ctrl + C`. Refresh the browse
 | `tagline` | One- or two-sentence pitch under the role. |
 | `location` | Shown in the Contact section ("Based in"). |
 | `available` | `true` shows the green **Open to opportunities** badge; `false` hides it. |
-| `resumeUrl` | Path to the résumé PDF. Set to `""` to hide the **Download résumé** button. |
+| `resumeUrl` | Path to the resume PDF. Set to `""` to hide the **Download Resume** button. |
 
 ### Stats (the big numbers under the hero)
 
@@ -205,19 +205,19 @@ Add any other profile (Kaggle, Medium, X, …) as another `{ label, url }` entry
 
 ---
 
-## Updating the résumé
+## Updating the resume
 
-The **Download résumé** button serves `assets/Vetcha_Kowshik_Resume.pdf`.
+The **Download Resume** button serves `assets/Vetcha_Kowshik_Resume.pdf`.
 
 **Replace it with a newer version (simplest):**
 
-1. Export the new résumé as PDF.
+1. Export the new resume as PDF.
 2. Save it over `assets/Vetcha_Kowshik_Resume.pdf`, keeping **exactly the same file name**.
 3. Commit and push:
 
    ```powershell
    git add assets/Vetcha_Kowshik_Resume.pdf
-   git commit -m "Update résumé"
+   git commit -m "Update resume"
    git push
    ```
 
@@ -225,7 +225,7 @@ The **Download résumé** button serves `assets/Vetcha_Kowshik_Resume.pdf`.
 
 **Hide the button:** set `resumeUrl: ""` in `content.js`.
 
-> ⚠️ **Privacy:** the résumé is public, and anyone can download it. Leave out anything you don't want shared, such as your phone number or home address. Because the repo is public, **old versions stay in the git history** even after you replace the file. Removing them completely needs a history rewrite (e.g. `git filter-repo`).
+> ⚠️ **Privacy:** the resume is public, and anyone can download it. Leave out anything you don't want shared, such as your phone number or home address. Because the repo is public, **old versions stay in the git history** even after you replace the file. Removing them completely needs a history rewrite (e.g. `git filter-repo`).
 
 ---
 
@@ -353,5 +353,5 @@ If you buy a domain (e.g. `kowshikvetcha.com`):
 | Change doesn't show on the live site | Wait about 1 minute, then hard-refresh with `Ctrl + F5`. Check the repo's **Actions** tab for a failed build. Confirm you ran `git push`. |
 | Contact form says "Sorry, that didn't send" | Check the key in `content.js`, check the Website URL setting on Web3Forms, and check you're not over the monthly limit. |
 | Form messages not arriving | Look in spam and mark the message "Not spam". Check the delivery email on Web3Forms. |
-| Résumé downloads an old version | The browser cached it. Hard-refresh, or rename the file and update `resumeUrl`. |
+| Resume downloads an old version | The browser cached it. Hard-refresh, or rename the file and update `resumeUrl`. |
 | Old link preview on LinkedIn | Use the LinkedIn Post Inspector to re-scrape the URL. |
