@@ -10,7 +10,7 @@ window.PORTFOLIO = {
     "I architect and deploy production ML & GenAI systems — from demand forecasting and fraud detection to enterprise RAG — and keep them accurate with end-to-end MLOps.",
   location: "Hyderabad, India",
   available: true, // shows the "Open to opportunities" badge
-  resumeUrl: "", // e.g. "assets/resume.pdf" — leave empty to hide the button
+  resumeUrl: "assets/Vetcha_Kowshik_Resume.pdf", // e.g. "assets/resume.pdf" — leave empty to hide the button
 
   about: [
     "I'm a Machine Learning Engineer with around 5 years of experience turning complex business problems into high-impact data solutions. My work spans demand forecasting, fraud detection, GenAI-enabled automation and the MLOps that keeps models healthy in production.",
